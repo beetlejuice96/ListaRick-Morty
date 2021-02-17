@@ -51,7 +51,13 @@ class App extends React.Component {
 
   }
 
-
+  deleteRow =(id)=>{
+      const newArray = this.state.data.filter(row => row.id !== id);
+      this.setState({
+          data:newArray,
+          dataView:newArray
+      })
+  }
 
 
   render(){
@@ -70,6 +76,7 @@ class App extends React.Component {
                         <th scope="col">#</th>
                         <th scope="col">Name</th>
                         <th scope="col">Species</th>
+                        <th scope="col">actions</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -79,6 +86,11 @@ class App extends React.Component {
                             <td className="table-danger">{row.id}</td>
                             <td className="table-danger">{row.name}</td>
                             <td className="table-danger">{row.species}</td>
+                            <td className="table-danger">
+                                <button onClick={()=>this.deleteRow(row.id)} className="btn btn-danger btn-block">
+                                    Eliminar
+                                </button>
+                            </td>
                         </tr>
                     );
                 })}

@@ -2,6 +2,9 @@ import logo from './logo.svg';
 import React from 'react';
 import ReactDOM from 'react-dom';
 import './App.css';
+import Table from './components/Table'
+import escapeStringRegexp from 'escape-string-regexp';
+
 
 class App extends React.Component {
 
@@ -12,7 +15,6 @@ class App extends React.Component {
       dataView:[]
     }
   }
-
 
   obtenerPersonajes = () =>{
     //TODO hacer array con nros random y pasarlo a la url.
@@ -31,10 +33,19 @@ class App extends React.Component {
   handleChange=(e)=> {
       let aux = [];
       this.state.data.map((row) => {
-          //row.name.indexOf(e.target.value) ? aux.push(row) :
-
-          if (row.name.toLowerCase().includes(e.target.value.toLowerCase())) {
+          /*if (row.name.toLowerCase().includes(e.target.value.toLowerCase())) {
               aux.push(row)
+          }*/
+          /*TODO ver como poder recorrer verdaderamente todos los campos anidados de un objeto.*/
+          const regex = new RegExp(`.*?${escapeStringRegexp(e.target.value)}.*?`, 'i');
+          const rowKeys=['id','name','species'];
+
+          for (let i = 0; i<rowKeys.length;i++){
+              let value = row[rowKeys[i]];
+              if(regex.test(value)){
+                  aux.push(row);
+                  break;
+              }
           }
       })
       if (e.target.value === ''){
@@ -59,43 +70,40 @@ class App extends React.Component {
       })
   }
 
+  editRow=(row)=>{
+    const {id,name,species}=row;
+    const newArray = this.state.data.map(personaje=>personaje.id===row.id ? {...personaje ,id:id,name:name,species:species} : personaje);
+    this.setState({
+        data:newArray,
+        dataView:newArray
+    })
+  }
 
   render(){
+      const style= {
+          background:'#282c34',
+          color:'white',
+      }
+      const styleh1 = {
+          margin:'auto',
+      }
+      const stylenav = {
+          display:'flex',
+          flexDirection:'column',
+
+      }
     return(
 
         <React.Fragment>
+            <header className="navbar navbar-expand-lg " style={style}>
+                <h1 style={styleh1}>Lista de rick & Morty</h1>
+            </header>
             <nav className="navbar navbar-expand-lg ">
                 <button className="btn btn-info" onClick={this.obtenerPersonajes}>Listar personajes</button>
                 <input type="text" className="ms-4" onChange={this.handleChange}/>
             </nav>
+            <Table dataView ={this.state.dataView} deleteRow={this.deleteRow} editRow={this.editRow}/>
 
-
-            <table className="table table-danger">
-                <thead>
-                    <tr className="table-danger">
-                        <th scope="col">#</th>
-                        <th scope="col">Name</th>
-                        <th scope="col">Species</th>
-                        <th scope="col">actions</th>
-                    </tr>
-                </thead>
-                <tbody>
-                {this.state.dataView.map((row,i)=>{
-                    return(
-                        <tr key={i} className="table-danger">
-                            <td className="table-danger">{row.id}</td>
-                            <td className="table-danger">{row.name}</td>
-                            <td className="table-danger">{row.species}</td>
-                            <td className="table-danger">
-                                <button onClick={()=>this.deleteRow(row.id)} className="btn btn-danger btn-block">
-                                    Eliminar
-                                </button>
-                            </td>
-                        </tr>
-                    );
-                })}
-                </tbody>
-            </table>
         </React.Fragment>
     )
   }

@@ -2,7 +2,7 @@ import logo from './logo.svg';
 import React from 'react';
 import ReactDOM from 'react-dom';
 import './App.css';
-import Table from './components/Table'
+import Table from './components/Table.js';
 import escapeStringRegexp from 'escape-string-regexp';
 
 

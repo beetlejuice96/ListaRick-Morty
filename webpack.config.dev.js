@@ -1,25 +1,19 @@
 const path = require("path");
 const HtmlWebpackPlugin = require("html-webpack-plugin");
 const MiniCssExtractPlugin = require("mini-css-extract-plugin");
-const CssMinimizerPlugin = require("css-minimizer-webpack-plugin");
-const TerserPlugin = require("terser-webpack-plugin");
-const { CleanWebpackPlugin } = require("clean-webpack-plugin");
+
 module.exports = {
   entry: "./src/index.js",
   //   context: path.resolve(__dirname),
   output: {
     path: path.resolve(__dirname, "dist"),
     filename: "bundle.js",
-    publicPath: "/",
+    // publicPath: "pathOrUrlWhenProductionBuild",
   },
   resolve: {
     extensions: [".js", ".jsx"],
-    alias: {
-      "@components": path.resolve(__dirname, "src/components/"),
-      // "@styles": path.resolve(__dirname, "src/styles"),
-    },
   },
-  mode: "production",
+  mode: "development",
   module: {
     rules: [
       {
@@ -47,19 +41,12 @@ module.exports = {
     new MiniCssExtractPlugin({
       filename: "[name].css",
     }),
-    new CleanWebpackPlugin(),
   ],
-  optimization: {
-    minimize: true,
-    minimizer: [new CssMinimizerPlugin(), new TerserPlugin()],
+  devServer: {
+    contentBase: path.join(__dirname, "dist"),
+    compress: true,
+    port: 3006,
   },
-
-  //se quita ya que solo es utilizada en desarrollo
-  // devServer: {
-  //   contentBase: path.join(__dirname, "dist"),
-  //   compress: true,
-  //   port: 3006,
-  // },
   //   devtool: "source-map",
   //   plugins: [],
 };
